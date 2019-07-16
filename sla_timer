@@ -2,7 +2,7 @@
 
 try{
 	
-	if(isset($_POST["data_inicial"]) && isset($_POST["sla"]) && isset($_POST["sla_opt"])){
+	if(isset($_POST["data_inicial"]) && isset($_POST["sla"]) && isset($_POST["sla_opt"])){ 
 		$data_inicial = $_POST["data_inicial"];
 		$sla = $_POST["sla"];
 		$sla_opt = $_POST["sla_opt"];
