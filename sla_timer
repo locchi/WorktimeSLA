@@ -2,7 +2,7 @@
 
 try{
 	
-	if(isset($_POST["data_inicial"]) && isset($_POST["sla"]) && isset($_POST["sla_opt"])){ 
+	if(isset($_POST["data_inicial"]) && isset($_POST["sla"]) && isset($_POST["sla_opt"])){
 		$data_inicial = $_POST["data_inicial"];
 		$sla = $_POST["sla"];
 		$sla_opt = $_POST["sla_opt"];
@@ -93,7 +93,7 @@ function iterate_worktime($date, $time){
 		
 		$minutes = date('i', strtotime($date));
 		$hours = date('H', strtotime($date));
-		$day_minutes = intval($minutes) + intval($hours)*60;
+		$current = intval($minutes) + intval($hours)*60;
 		
 		foreach($worktime as $weekday_iterator){
 			if(($weekday_iterator['fim'] - $weekday_iterator['inicio']) > 0){
@@ -103,7 +103,7 @@ function iterate_worktime($date, $time){
 			else{
 				continue;
 			}
-			if($day_minutes >= $inicio && $day_minutes < $fim){
+			if($current >= $inicio && $current < $fim){
 				$time--;
 			}
 		}
@@ -142,7 +142,7 @@ function get_worktime($index){
 	</head>
 	<style>
 		.main{
-			width: 550px;
+			width: 480px;
 			height: 650px;
 			overflow: hidden;
 			border: 2px solid;
@@ -150,7 +150,7 @@ function get_worktime($index){
 		}
 		
 		.periodos{
-			width: 950px;
+			width: 800px;
 			height: 650px;
 			overflow: hidden;
 			border: 2px solid;
@@ -223,7 +223,7 @@ function get_worktime($index){
 		
 		.removePeriod{
 			margin-left: 20%; 
-			background-color: red; /* Green */
+			background-color: red;
 			border: 1px solid;
 			border-radius: 4px;
 			color: white;
@@ -332,11 +332,11 @@ function get_worktime($index){
 								<td>
 									<select name="weekday0" required>
 										<option></option>
-										<option value="0">Segunda-Feira</option>
-										<option value="1">Terça-Feira</option>
-										<option value="2">Quarta-Feira</option>
-										<option value="3">Quinta-Feira</option>
-										<option value="4">Sexta-Feira</option>
+										<option value="0">Segunda-feira</option>
+										<option value="1">Terça-feira</option>
+										<option value="2">Quarta-feira</option>
+										<option value="3">Quinta-feira</option>
+										<option value="4">Sexta-feira</option>
 										<option value="5">Sábado</option>
 										<option value="6">Domingo</option>
 									</select>
@@ -358,8 +358,8 @@ function get_worktime($index){
 							}
 							else{
 								foreach($GLOBALS['periodos'] as $key => $weekdays){
+									$weekday = $key;
 									foreach($weekdays as $periods){
-										$weekday = $key;
 										$position = $periods['position'];
 										$horas_init = intval($periods['inicio']/60);
 										$minutos_init = $periods['inicio']%60;
@@ -371,11 +371,11 @@ function get_worktime($index){
 											<td>
 												<select name="weekday<?php echo $position;?>" required>
 													<option></option>
-													<option <?php if($weekday == 0){ echo "selected";} ?> value="0">Segunda-Feira</option>
-													<option <?php if($weekday == 1){ echo "selected";} ?> value="1">Terça-Feira</option>
-													<option <?php if($weekday == 2){ echo "selected";} ?> value="2">Quarta-Feira</option>
-													<option <?php if($weekday == 3){ echo "selected";} ?> value="3">Quinta-Feira</option>
-													<option <?php if($weekday == 4){ echo "selected";} ?> value="4">Sexta-Feira</option>
+													<option <?php if($weekday == 0){ echo "selected";} ?> value="0">Segunda-feira</option>
+													<option <?php if($weekday == 1){ echo "selected";} ?> value="1">Terça-feira</option>
+													<option <?php if($weekday == 2){ echo "selected";} ?> value="2">Quarta-feira</option>
+													<option <?php if($weekday == 3){ echo "selected";} ?> value="3">Quinta-feira</option>
+													<option <?php if($weekday == 4){ echo "selected";} ?> value="4">Sexta-feira</option>
 													<option <?php if($weekday == 5){ echo "selected";} ?> value="5">Sábado</option>
 													<option <?php if($weekday == 6){ echo "selected";} ?> value="6">Domingo</option>
 												</select>
@@ -413,14 +413,14 @@ function get_worktime($index){
 			
 			var pos = <?php echo $position+1; ?>;
 			
-			$('form').on('submit', function(event) {
+			$('form').on('submit', function(e) {
 				var dI = $('#data_inicial').val();
 				var sla = $('#sla').val();
 				var sla_opt1 = $('#horas').prop("checked");
 				var sla_opt2 = $('#minutos').prop("checked");
 				
 				if(dI == "" || sla == "" || (sla_opt1 == false && sla_opt2 == false)){
-					event.preventDefault();
+					e.preventDefault();
 					$("#alert").show();
 				}
 				else{
@@ -429,7 +429,7 @@ function get_worktime($index){
 			});
 			
 			$('#addPeriod').on('click', function(){
-				$('#customers').append('<tr id="TRweekday'+pos+'"><td><select name="weekday'+pos+'" required><option></option><option value="0">Segunda-Feira</option><option value="1">Terça-Feira</option><option value="2">Quarta-Feira</option><option value="3">Quinta-Feira</option><option value="4">Sexta-Feira</option><option value="5">Sábado</option><option value="6">Domingo</option></select></td><td><input type="number" name="h_init_'+pos+'" min="0" max="23" style="width: 40px; " required></input> : <input name="m_init_'+pos+'" type="number" min="0" max="59" style="width: 40px;" required></input></td><td><input name="h_end_'+pos+'" type="number" min="0" max="23" style="width: 40px;" required></input> : <input name="m_end_'+pos+'" type="number" min="0" max="59" style="width: 40px;" required></input></td><td><div id="nTRweekday'+pos+'" class="removePeriod '+pos+'">x</div></td></tr>');
+				$('#customers').append('<tr id="TRweekday'+pos+'"><td><select name="weekday'+pos+'" required><option></option><option value="0">Segunda-feira</option><option value="1">Terça-feira</option><option value="2">Quarta-feira</option><option value="3">Quinta-feira</option><option value="4">Sexta-feira</option><option value="5">Sábado</option><option value="6">Domingo</option></select></td><td><input type="number" name="h_init_'+pos+'" min="0" max="23" style="width: 40px; " required></input> : <input name="m_init_'+pos+'" type="number" min="0" max="59" style="width: 40px;" required></input></td><td><input name="h_end_'+pos+'" type="number" min="0" max="23" style="width: 40px;" required></input> : <input name="m_end_'+pos+'" type="number" min="0" max="59" style="width: 40px;" required></input></td><td><div id="nTRweekday'+pos+'" class="removePeriod '+pos+'">x</div></td></tr>');
 				pos++;
 			});
 			
